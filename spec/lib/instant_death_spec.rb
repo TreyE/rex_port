@@ -20,8 +20,7 @@ describe RexPort, "given a poorly behaved program, named instant_death.rb" do
   let(:child_config) do
     RexPort::ChildConfig.new(
       command,
-      dir,
-      10
+      dir
     )
   end
 
