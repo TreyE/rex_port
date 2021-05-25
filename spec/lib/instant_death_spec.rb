@@ -1,9 +1,12 @@
 require "spec_helper"
+require "rex_port"
+
+require "spec_helper"
 
 require "rex_port"
 
-describe RexPort, "given a well behaved program, named pingpong.rb" do
-  let(:command) { "ruby pingpong.rb" }
+describe RexPort, "given a poorly behaved program, named instant_death.rb" do
+  let(:command) { "ruby instant_death.rb" }
   let(:dir) do
     File.expand_path(
       File.join(
@@ -31,9 +34,7 @@ describe RexPort, "given a well behaved program, named pingpong.rb" do
     )
   end
 
-  it "responds to the message" do
-    child.pid
-    response = child.request(message)
-    expect(response).to eq "PING! PONG!"
+  it "raises a read error" do
+    expect { child.request(message) }.to raise_error(RexPort::Errors::ResponseReadError)
   end
 end
