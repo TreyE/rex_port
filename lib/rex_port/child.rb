@@ -12,6 +12,11 @@ module RexPort
       listen
     end
 
+    def reboot!
+      kill!
+      boot!
+    end
+
     def boot!
       @pid, @reader, @writer, @error_reader = @child_config.boot!
       check_status = check_process_death
@@ -52,28 +57,28 @@ module RexPort
         readable = IO.select([@reader, @error_reader], [], [@error_reader])
       end
       unless readable
-        reconnect!
+        reboot!
         raise Errors::ResponseTimeoutError, "process timeout!"
       end
 
       first_readable_array = readable.detect { |item| !item.empty? }
       if first_readable_array.first.fileno == @error_reader.fileno
         read = try_read_nonblock(first_readable_array.first)
-        reconnect!
+        reboot!
         raise Errors::ResponseReadError, read
       end
 
       packet_response_size = @reader.read(4)
       if packet_response_size.nil? || packet_response_size.bytesize < 4
         check_result = check_process_death
-        reconnect!
+        reboot!
         raise Errors::ResponseReadError, "process crashed:\n#{check_result.last}"
       end
       read_size = packet_response_size.unpack("L>*")
       read_buff = @reader.read(read_size.first)
       check_result = check_process_death
       unless check_result.empty?
-        reconnect!
+        reboot!
         raise Errors::ResponseReadError, "process crashed:\n#{check_result.last}"
       end
       read_buff
@@ -89,11 +94,6 @@ module RexPort
       end
       read_death_data = try_read_nonblock(@error_reader)
       [pid_status, read_death_data]
-    end
-
-    def reconnect!
-      kill!
-      boot!
     end
 
     def try_read_nonblock(io)
