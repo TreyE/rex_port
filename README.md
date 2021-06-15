@@ -10,9 +10,19 @@ When should I use this?
 
 **A:**
 
-Almost never.
+**Almost never.**
 
 This should only be used in the very rare case you have functionality trapped in a foreign language or utility you either can not find another more reliable way to integrate with, or which it is cost prohibitive to reimplement in Ruby.  Consider the requirements very carefully before deciding to use this method.
+
+**Q:**
+
+Are there any limitations to this I should know about?
+
+**A:**
+
+**Yes.**
+
+Message request and response sizes are limited to sizes you can express as an Int-32 (thus around 2/4 gigs, depending on how the port application wants to treat the signedness of the integers).
 
 ## Port Protocol
 
