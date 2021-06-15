@@ -31,6 +31,7 @@ The reasons we chose this approach were:
 2. There is no XSLT 2.0 support in Ruby.
 3. The only extant library that supports XSLT 2.0 is Saxon, which is a java library.
 4. We could not afford the performance hit, combined with the deployment and maintenance overhead, of coding and standing up a seperate java web appplication and invoking that application remotely.
+5. Our web service doesn't accept 2G payloads anyway.
 
 In the end we created a simple java command-line utility that reads the input XML from STDIN and prints the result to STDOUT.  This library was perfect for interacting with such a tool.
 
@@ -71,5 +72,5 @@ What actually happens when we spin up a port is this:
 4. Because of how pipes and fork work, we now have a command that is running, with the following benefits:
    1. Anything we write to the Ruby Writer pipe, the child will get as it's STDIN
    2. We can read anything the child writes to STDOUT from the Ruby Standard Reader pipe
-   3. We can read any errors the child writes to STDERR from the Ruby Error Pipe
-5. We now send messages by writing to our Ruby Writer Pipe and getting responses from our Ruby Standard Reader/Ruby Error Reader Pipe.  We also monitor the process to see if it dies, and spin up a new one if required.
+   3. We can read any errors the child writes to STDERR from the Ruby Error Reader pipe
+5. We now send messages by writing to our Ruby Writer Pipe and getting responses from our Ruby Standard Reader/Ruby Error Reader pipes.  We also monitor the process to see if it dies, and spin up a new one if required.
