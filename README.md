@@ -2,6 +2,18 @@
 
 Run external programs and talk to them over pipes.
 
+## FAQs
+
+**Q:**
+
+When should I use this?
+
+**A:**
+
+Almost never.
+
+This should only be used in the very rare case you have functionality trapped in a foreign language or utility you either can not find another more reliable way to integrate with, or which it is cost prohibitive to reimplement in Ruby.  Consider the requirements very carefully before deciding to use this method.
+
 ## Port Protocol
 
 The port protocol is a simple, language-agnostic interoperability method that comes from Erlang.
@@ -16,9 +28,7 @@ Invoking a port works like this:
 
 ## Detailed Port Operation
 
-Here I'm going to describe the details of how a port is actually created and run.
-
-Remember when I said that the processes talk to each other over standard in/out?  Yeah, that was kind of an oversimplifying lie.
+The details of how a port is actually created and run are more complicated than simply talking over standard in and out.
 
 What actually happens when we spin up a port is this:
 1. We create 3 pairs of pipes in the host (Ruby) process:
