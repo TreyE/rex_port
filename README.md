@@ -4,9 +4,7 @@ Run external programs and talk to them over pipes.
 
 ## FAQs
 
-**Q:**
-
-When should I use this?
+**Q:** When should I use this?
 
 **A:**
 
@@ -14,15 +12,27 @@ When should I use this?
 
 This should only be used in the very rare case you have functionality trapped in a foreign language or utility you either can not find another more reliable way to integrate with, or which it is cost prohibitive to reimplement in Ruby.  Consider the requirements very carefully before deciding to use this method.
 
-**Q:**
-
-Are there any limitations to this I should know about?
+**Q:** Are there any limitations to this I should know about?
 
 **A:**
 
 **Yes.**
 
 Message request and response sizes are limited to sizes you can express as an Int-32 (thus around 2/4 gigs, depending on how the port application wants to treat the signedness of the integers).
+
+**Q:** Do you have any example of a time when you would recommend using this, with the above recommendations and limitations in mind?
+
+**A:**
+
+We do.  In our case we needed to execute an XSLT 2.0 transform during the operation of a web service.
+
+The reasons we chose this approach were:
+1. We couldn't afford to re-write the transforms in XSLT 1.0.
+2. There is no XSLT 2.0 support in Ruby.
+3. The only extant library that supports XSLT 2.0 is Saxon, which is a java library.
+4. We could not afford the performance hit, combined with the deployment and maintenance overhead, of coding and standing up a seperate java web appplication and invoking that application remotely.
+
+In the end we created a simple java command-line utility that reads the input XML from STDIN and prints the result to STDOUT.  This library was perfect for interacting with such a tool.
 
 ## Port Protocol
 
